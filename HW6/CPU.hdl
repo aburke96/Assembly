@@ -1,0 +1,55 @@
+CHIP CPU {
+
+    IN  inM[16],
+        instruction[16],
+        reset;
+
+    OUT outM[16],
+        writeM,
+        addressM[15],
+        pc[15];
+
+		
+    PARTS:
+    Not(in=instruction[15], out=isAInstruction);
+        
+    Mux16(a=ALUOut, b=instruction, sel=isAInstruction, out=AIn);
+	
+    And(a=instruction[5], b=instruction[15], out=isCAndDestA);
+	
+    Or(a=isCAndDestA, b=isAInstruction, out=ALoad);
+    ARegister(in=AIn, load=ALoad, out=AReg, out[0..14]=addressM);
+    
+    Mux16(a=AReg, b=inM, sel=instruction[12], out=AMOut);
+    
+    And(a=instruction[4], b=instruction[15], out=DLoad);
+    DRegister(in=ALUOut, load=DLoad, out=DReg);
+    
+    ALU(x=DReg, y=AMOut,
+        zx=instruction[11],
+        nx=instruction[10],
+        zy=instruction[9],
+        ny=instruction[8],
+        f=instruction[7],
+        no=instruction[6],
+        out=ALUOut,
+        out=outM,
+        ng=neg,
+        zr=zero);
+    
+    And(a=instruction[3], b=instruction[15], out=writeM);
+    
+    And(a=neg, b=instruction[2], out=JLT);
+    And(a=zero, b=instruction[1], out=JEQ);
+    
+    Or(a=neg, b=zero, out=negOrZero);
+    Not(in=negOrZero, out=greaterThanZero);
+    And(a=greaterThanZero, b=instruction[0], out=JGT);
+    
+    Or(a=JLT, b=JEQ, out=JLE);
+    Or(a=JLE, b=JGT, out=JMP);
+    
+    And(a=JMP, b=instruction[15], out=isJump);
+    
+    PC(in=AReg, inc=true, load=isJump, reset=reset, out[0..14]=pc);
+}

@@ -1,0 +1,117 @@
+class String
+{
+    field Array chars;
+    field int len;
+    
+    constructor String new(int maxLength)
+    {
+        if(maxLength < 1)
+        {
+            let maxLength = 1;
+        }
+        
+        let chars = Array.new(maxLength);
+        let len = 0;
+        
+        return this;
+    }
+
+    method void dispose()
+    {
+        do chars.dispose();
+        do Memory.dealloc(this);
+        
+        return;
+    }
+
+    method int length()
+    {
+        return len;
+    }
+
+    method char charAt(int j)
+    {
+        return chars[j];
+    }
+
+    method void setCharAt(int j, char c)
+    {
+        let chars[j] = c;
+        return;
+    }
+
+    method String appendChar(char c)
+    {
+        let chars[len] = c;
+        let len = len + 1;
+        return this;
+    }
+
+    method void eraseLastChar()
+    {
+        if(len > 0)
+        {
+            let len = len - 1; 
+        }
+        return;
+    }
+
+    method int intValue()
+    {
+        var int num, i;
+        var boolean isNeg;
+        
+        let num = 0;
+        
+        if(len > 1 & chars[0] = 45)
+        {
+            let i = i + 1;
+            let isNeg = true;
+        }
+        else
+        {
+            let i = 0;
+            let isNeg = false;
+        }
+
+        while(i < len  & String.isDigit(chars[i]))
+        {
+            let num = (num * 10) + chars[i] - 48;
+            let i = i + 1;
+        }
+        
+        if(isNeg)
+        {
+            return -num;
+        }
+        else
+        {
+            return num;
+        }
+    }
+
+    function bool isDigit(char c)
+    {
+        return (c > 47) & (c < 58);
+    }
+
+    method void setInt(int value)
+    {
+        return;
+    }
+
+    function char newLine()
+    {
+        return 128;
+    }
+
+    function char backSpace()
+    {
+        return 129;
+    }
+
+    function char doubleQuote()
+    {
+        return 34;
+    }
+}
