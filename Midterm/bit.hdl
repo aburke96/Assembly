@@ -1,0 +1,8 @@
+CHIP Bit {
+    IN in, load;
+    OUT out;
+
+    PARTS:
+    // Data Flip-Flop
+    DFF(in=in, out=out, load=load);
+}
