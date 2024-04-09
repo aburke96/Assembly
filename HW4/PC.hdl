@@ -1,0 +1,11 @@
+CHIP PC {
+    IN in[16],load,inc,reset;
+    OUT out[16];
+
+    PARTS:
+    Inc16(in=curVal, out=incVal);
+    Mux16(a=curVal, b=incVal, sel=inc, out=incOut);
+    Mux16(a=incOut, b=in, sel=load, out=loadOut);
+    Mux16(a=loadOut, b=false, sel=reset, out=newVal);
+    Register(in=newVal, load=true, out=curVal, out=out);
+}
